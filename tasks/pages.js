@@ -34,7 +34,7 @@ module.exports = function(grunt) {
 
     
     // Iterate over all specified file groups.
-    async.eachLimit(this.files, 25, function (file, next) {
+    async.each(this.files, function (file, next) {
         convert(file.src, file.dest, next);
     }.bind(this), this.async());
 
