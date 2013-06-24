@@ -15,8 +15,34 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('chains-pages');
 ```
 
-## Watch task
+## Pages task
 _Run this task with the `grunt pages` command._
+
+
+## Example
+
+```js
+pages: {
+  options: {
+    partials: ['include/*'],
+    template: 'layout/template.hogan',
+    context: function(src, dest){
+      return {title: 'Hello World!'};
+    },
+    engine: 'hogan'
+  },
+  test: {
+    files: [
+      {
+        expand: true,
+        cwd: 'content/',
+        src: ['*'],
+        dest: 'out/'
+      }
+    ]
+  }
+}
+```
 
 
 ## Options
@@ -29,7 +55,7 @@ This plugin supports use of the [files API](http://gruntjs.com/configuring-tasks
 #### template
 Type: `String`
 
-This defines which tepmlate to use when precess files.
+This defines which tepmlate to use when precessing files.
 
 #### partials
 Type: `String|Array`
@@ -49,5 +75,5 @@ Default is `hogan`.
 Type: `Function|Object`
 
 This defines extra Context when render templates. It will add a `partials` property
- and a `content` property. So, in your template you can use `content` to output the content specified int `files.src`.
- If defined it as a Function, you must return an Object.
+ and a `content` property. So, in your template you can use `content` to output the content specified in `files.src`.
+ If defined it as a Function, you must return an Object with all properties accessed in your template.
