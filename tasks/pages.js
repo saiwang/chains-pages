@@ -4,7 +4,8 @@ module.exports = function(grunt) {
 
   var path = require('path'),
       cons = require('./lib/consolidate'),
-      async = require('async');
+      async = require('async'),
+      eyes = require('eyes');
 
   grunt.registerMultiTask('pages', 'Compiles templates with content to html.', function() {
 
@@ -28,11 +29,11 @@ module.exports = function(grunt) {
     options.partials = grunt.file.expand(options.partials);
     options.partials.forEach(function(file){
         var name = path.basename(file, path.extname(file));
-        partials[name] = file;
+        partials[name] = grunt.file.read(file);
         grunt.log.writeln('Get Partial: ' + name + ' --> '+ file);
     });
 
-    
+    eyes.inspect(this.files);
     // Iterate over all specified file groups.
     async.eachSeries(this.files, function (file, next) {
         convert(file.src, file.dest, next);
@@ -59,6 +60,7 @@ module.exports = function(grunt) {
       cons[engine](options.template, context, function(err, html){
         if(err)
         {
+          eyes.inspect(err);
           grunt.fail.warn(err);
         }
 

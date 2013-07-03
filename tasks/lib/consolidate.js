@@ -112,23 +112,25 @@ function read(path, options, fn) {
  * @api private
  */
 
+//I will read partials' content myself.
 function readPartials(path, options, fn) {
-  if (!options.partials) return fn();
-  var partials = options.partials;
-  var keys = Object.keys(partials);
+  // if (!options.partials) return fn();
+  // var partials = options.partials;
+  // var keys = Object.keys(partials);
 
-  function next(index) {
-    if (index == keys.length) return fn(null);
-    var key = keys[index];
-    var file = partials[key];   //We give the Correct Absolute Path there!!!
-    read(file, options, function(err, str){
-      if (err) return fn(err);
-      options.partials[key] = str;
-      next(++index);
-    });
-  }
+  // function next(index) {
+  //   if (index == keys.length) return fn(null);
+  //   var key = keys[index];
+  //   var file = partials[key];   //We give the Correct Absolute Path there!!!
+  //   read(file, options, function(err, str){
+  //     if (err) return fn(err);
+  //     options.partials[key] = str;
+  //     next(++index);
+  //   });
+  // }
 
-  next(0);
+  // next(0);
+  return fn();
 }
 
 /**
