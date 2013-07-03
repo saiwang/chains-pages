@@ -9,8 +9,8 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('pages', 'Compiles templates with content to html.', function() {
 
     var options = this.options({
-      partials: [],
-      context: function(src, dest){return {};},
+      partials: [],  //it will useable for hogan, swig and so on. Jade will read partials itself in some dirs.
+      context: function(src, dest){return {};}, //extra data to template, and will integrate other data
       template: path.join(__dirname, 'template.hogan'),
       engine: 'hogan'
     });
@@ -23,7 +23,7 @@ module.exports = function(grunt) {
       return false;
     }
 
-    //Read template partials
+    //Read template partials. Note: not useful for Jade engine. Todo: ...
     var partials = {};
     options.partials = grunt.file.expand(options.partials);
     options.partials.forEach(function(file){
@@ -34,7 +34,7 @@ module.exports = function(grunt) {
 
     
     // Iterate over all specified file groups.
-    async.each(this.files, function (file, next) {
+    async.eachSeries(this.files, function (file, next) {
         convert(file.src, file.dest, next);
     }.bind(this), this.async());
 

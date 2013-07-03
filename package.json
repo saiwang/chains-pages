@@ -1,7 +1,7 @@
 {
   "name": "chains-pages",
   "description": "Compile templates with content to html",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/saiwang/chains-pages",
   "author": {
     "name": "WangSai",
