@@ -1,3 +1,11 @@
+/*
+ * chains-pages
+ * https://github.com/saiwang/chains-pages
+ *
+ * Copyright (c) 2013 WangSai
+ * Licensed under the MIT license.
+ */
+
 'use strict';
 
 module.exports = function(grunt) {
@@ -10,20 +18,9 @@ module.exports = function(grunt) {
     },
 
     jshint: {
-      all: ['tasks/*'],
+      all: ['tasks/*.js'],
       options: {
-        curly: true,
-        eqeqeq: true,
-        immed: true,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        sub: true,
-        undef: true,
-        unused: true,
-        boss: true,
-        eqnull: true,
-        node: true
+        jshintrc: '.jshintrc'
       }
     },
     pages: {
@@ -31,7 +28,7 @@ module.exports = function(grunt) {
         partials: ['test/include/*'],
         template: 'test/layout/template.hogan',
         context: function(src, dest){
-          dest = dest;
+          grunt.log.writeln('Processing file : ' + src);
           var content = grunt.file.read(src),
           title = content.match(/<h1>.*<\/h1>/).toString();
           return {title: title.replace(/<[\/]?h1>/g, '')};
@@ -57,7 +54,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task.
-  grunt.registerTask('default', ['jshint']);
+  grunt.registerTask('default', ['jshint', 'pages']);
   grunt.registerTask('dev', ['watch', 'jshint']);
 
 };

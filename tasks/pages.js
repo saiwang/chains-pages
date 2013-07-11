@@ -5,7 +5,7 @@ module.exports = function(grunt) {
   var path = require('path'),
       cons = require('./lib/consolidate'),
       async = require('async'),
-      eyes = require('eyes');
+      inspect = require('eyes').inspector({ stream: null });
 
   grunt.registerMultiTask('pages', 'Compiles templates with content to html.', function() {
 
@@ -30,44 +30,52 @@ module.exports = function(grunt) {
     options.partials.forEach(function(file){
         var name = path.basename(file, path.extname(file));
         partials[name] = grunt.file.read(file);
-        grunt.log.writeln('Get Partial: ' + name + ' --> '+ file);
+        grunt.log.writeln('Read partial file: ' + name + ' --> '+ file);
     });
 
-    eyes.inspect(this.files);
+    grunt.log.debug(inspect(this.files));
     // Iterate over all specified file groups.
     async.eachSeries(this.files, function (file, next) {
         convert(file.src, file.dest, next);
     }.bind(this), this.async());
 
     function convert(src, dest, next){
-      //compose 'context' 
-      var context = {};
-      if(typeof options.context === 'function')
+      if(src.length > 0)
       {
-        context = options.context(src,dest);
+          //compose 'context' 
+          var context = {};
+          if(typeof options.context === 'function')
+          {
+            context = options.context(src[0],dest);
+          }
+          else if(typeof options.context  === 'object')
+          {
+            context = options.context;
+          }
+
+           //Set 'partials'
+          context.partials = partials;
+
+          //set 'content'
+          context.content = grunt.file.read(src[0]);
+          
+          cons[engine](options.template, context, function(err, html){
+            if(err)
+            {
+              grunt.log.debug(inspect(err));
+              grunt.fail.warn(err);
+            }
+
+            grunt.file.write(dest, html);
+            grunt.log.writeln('File "' + dest + '" created.');
+            next();
+          });
       }
-      else if(typeof options.context  === 'object')
+      else
       {
-        context = options.context;
-      }
-
-       //Set 'partials'
-      context.partials = partials;
-
-      //set 'content'
-      context.content = grunt.file.read(src);
-      
-      cons[engine](options.template, context, function(err, html){
-        if(err)
-        {
-          eyes.inspect(err);
-          grunt.fail.warn(err);
-        }
-
-        grunt.file.write(dest, html);
-        grunt.log.writeln('File "' + dest + '" created.');
+        // grunt.log.errorlns('No source file for creating"' + dest + '" !');
         next();
-      });
+      }
     }
 
   });
