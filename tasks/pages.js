@@ -58,6 +58,7 @@ module.exports = function(grunt) {
 
           //set 'content'
           context.content = grunt.file.read(src[0]);
+          context.partials['body'] = context.content;
           
           cons[engine](options.template, context, function(err, html){
             if(err)
