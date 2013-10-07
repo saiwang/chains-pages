@@ -1,7 +1,7 @@
 {
   "name": "chains-pages",
   "description": "Compile templates with content to html",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "homepage": "https://github.com/saiwang/chains-pages",
   "author": {
     "name": "WangSai",
@@ -39,6 +39,8 @@
   "dependencies": {
     "async": "~0.2.9",
     "hogan.js": "~2.0.0",
-    "eyes": "~0.1.8"
+    "eyes": "~0.1.8",
+    "js-yaml": "~2.1.2",
+    "underscore": "~1.5.2"
   }
 }

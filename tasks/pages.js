@@ -5,6 +5,8 @@ module.exports = function(grunt) {
   var path = require('path'),
       cons = require('./lib/consolidate'),
       async = require('async'),
+      jsYaml = require('js-yaml'),
+      _ = require('underscore'),
       inspect = require('eyes').inspector({ stream: null });
 
   grunt.registerMultiTask('pages', 'Compiles templates with content to html.', function() {
@@ -57,8 +59,10 @@ module.exports = function(grunt) {
           context.partials = partials;
 
           //set 'content'
-          context.content = grunt.file.read(src[0]);
+          context.content = grunt.file.read(src[0]).replace(/^-{3}[\w\W]+?-{3}/, ''); //remove yaml-front-matter;
           context.partials['body'] = context.content;
+
+          context = _.extend({}, context, extractYfm(src[0]));
           
           cons[engine](options.template, context, function(err, html){
             if(err)
@@ -77,6 +81,27 @@ module.exports = function(grunt) {
         // grunt.log.errorlns('No source file for creating"' + dest + '" !');
         next();
       }
+    }
+
+    function extractYfm(src)
+    {
+        var re = /^-{3}([\w\W]+?)(-{3})([\w\W]*)*/;
+        var text = grunt.file.read(src);
+        var results = re.exec(text), 
+          conf = {};
+
+        if(results) {
+          conf = jsYaml.load(results[1]);
+
+          //Add content if set
+          // if(options.includeContent) 
+          // {
+          //   conf[options.contentName] = results[3] || '';
+          // }
+
+        }
+
+        return conf;
     }
 
   });
